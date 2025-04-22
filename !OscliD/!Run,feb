@@ -1,0 +1,4 @@
+RMEnsure Internet 0.00 Error !OscliD requires the Internet module
+
+Set OscliD$Dir <Obey$Dir>
+RMRun <OscliD$Dir>.OscliD

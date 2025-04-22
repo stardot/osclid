@@ -1,0 +1,89 @@
+OSCLI daemon
+v1.07 (02 September 2006)
+-----------------------------------------------------------------------------
+
+ On a network, it is often useful to be able to control other computers that
+may not be physically close to you.  OscliD allows you to do this for RISC OS
+computers, using the mechanism of "star commands", and a number of special
+tools.  Unlike other programs that work in a similar vein, OscliD works at
+the lowest level, which means that often you can even 'get through' to a
+crashed computer.  (The inspiration for this was when a certain A5000 started
+crashing regularly, leaving the modem still online.  When the computer
+crashed, none of the other applications would get through to it, but OscliD
+was low-level enough to accept a "hangup" command.)
+
+ The OscliD system requires a BSD-derived TCP/IP stack; i.e. any one of
+FreeNet, Acorn's "Internet" stack, or ANT's stack.  If you are running
+Access+, you will already be running a TCP/IP stack, but the IP addresses
+/may/ be rather convoluted if you haven't set them up explicitly.
+(Note: in order to find out a computer's local IP address, if you are running
+Access+, enter "*Show Inet$EtherIPAddr" at the command prompt.)
+
+ If a computer is to understand how to execute *commands sent to it, it needs
+to be running the *command "daemon" -- OscliD.  To do this, simply include
+the !OscliD application somewhere in the boot sequence of the machines you
+want to control.  Once you've done this, you can use the "roscli" utility to
+issue *commands to all the computers "under your power".
+
+ Now read "roscli" and "Security" to find out how to send commands using the
+"roscli" utility, and how to make your network secure from unwanted people.
+You may also want to read "Tools".
+
+ You'll find full buildable source code in the !OscliD directory. The module
+can be recreated by running the Build obey file or directly from a StrongED
+window.
+
+ This software is distributed under the GNU Generic Public License:
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful, but
+    WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+ The license file can be found as 'GPL' and should be in the documents
+directory of the archive you received this in.
+
+ In future, I'll perhaps add logging of the commands received, on-the-fly
+authorisation code encryption via DES/Blowfish/Idea and Unix-style
+authentication on all received commands.  It has also been suggested
+that OscliD could be converted into a generic RISC OS rexecd implementation.
+Also, it is possible that *OscliD_Task is entirely redundant, and that
+*WimpTask will duplicate its function precisely.  If this is true, it would
+be good to remove the *OscliD_Task code altogether, as this would simplify
+OscliD somewhat.
+
+Chris Rutter <chris@fluff.org>
+(http://www.fluff.org/widget/)
+
+-----------------------------------------------------------------------------
+
+Most of the above is as it was for version 1.06 of 25 Januari 1998. The only
+thing I have changed is the bit about needing 'an extended BASIC assembler'
+to rebuild the module. The current source file only contains straightforward
+BASIC V assembler source code.
+
+Also, in spite of Chris' suggestion, I didn't remove the *OscliD_Task code. I
+ran some tests using *WimpTask instead of OscliD's queue system and although things appeared to work just as well at first - even with *WimpTask called
+from inside the event handler - when the commands arrived in rapid succession
+(using a batch file on the Windows machine), *WimpTask did get confused and
+started to interfere with other tasks in an unpredictable way, while the
+queue system managed quite nicely.
+
+On the other hand, the actual *OscliD_Task command - though still available -
+is no longer required. The new -q switch (see the file Documents.Switches)
+does the same in a less complicated way (it puts the command in the queue
+without feeding it through the CLI). However, as I don't know how widespread
+this module's use is, shaving of a couple of bytes at the expense of losing
+backward compatibility just doesn't seem worth it.
+
+Frank de Bruijn <osclid@aconet.org>
+http://www.aconet.org/tools/

@@ -1,0 +1,65 @@
+roscli
+v1.01 (27 March 1997)
+-----------------------------------------------------------------------------
+
+Having setup all your computers to run OscliD, you'll want to send *commands
+to them.  To do this, you use the "roscli" utility.  The "roscli" utility
+should be put in your library directory (e.g. !Boot.Library), and used in
+applications or from the command-line.  Its command syntax is quite simple:
+
+    *roscli <host> <command>
+
+where <host> must be resolvable on the computer (i.e. an IP address or a
+name in the hosts file or available via a name resolver).
+
+ If you prefix <command> with a "*" character, the output will pop up
+in a text window when the command has finished executing.  For example,
+entering
+
+    *roscli carmel *Modules
+
+would execute a "*Modules" command on the computer called "carmel", and
+then pop-up the result on your screen, whereas
+
+    *roscli carmel Modules
+
+would popup the result as though it were output by whatever application
+is currently in use on "carmel".  (Note: this is dangerous and can lead to
+spurious crashes, so I don't advise running any remote commands that can
+cause output without the "*" parameter.)
+
+ (Note: in order to enable spooling of the result back to you, you must
+define a system variable OscliD$Spool which is the name of a file whose
+path is identical both from the remote and host computers. For example,
+you might share your harddisc as `HardDisc4' under Access+, which would
+make the path Share::HardDisc4.$.!Boot.Resources.!Scrap.ScrapDirs.Spool
+refer to the same file from both computers.)
+
+Spawning new applications
+иииииииииииииииииииииииии
+However, while this works fine for `simple' commands (such as *Modules
+or *ifconfig), commands which spawn new programs can have disastrous
+effects.  (Remember, OscliD actually interrupts the current application
+in order to execute the *command, so if it runs a new application it will
+confuse the interrupted program.)  So, we have to adopt a new scheme.
+OscliD has a special `queue', where it retains *commands sent to it until
+such time as it can execute them safely, without interrupting any other
+applications.  To make use of this queue, you must prefix the parameters
+to roscli with "-wimp" (i.e. before the name of the computer).  For
+example,
+
+    *roscli carmel "Filer_Run $.!Impression"
+
+would most likely crash the computer called "carmel", but
+
+    *roscli -wimp carmel "Filer_Run $.!Impression"
+
+would safely run Impression on the target computer. However, this feature
+*does* depend on the Wimp being polled. (If an application had crashed with
+an error box, Impression would never start up.)
+
+Unix roscli
+иииииииииии
+Clive Jones <clive@nsict.org> has provided a version of the roscli utility
+that should compile under any 4.3/4.4-BSD-compatible-ish Unix (Linux/NetBSD
+both work fine).

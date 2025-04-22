@@ -1,0 +1,77 @@
+Security
+-----------------------------------------------------------------------------
+
+ As it stands, OscliD offers a very insecure system.  Anyone with technical
+knowledge, or the "roscli" utility can send commands across a local network,
+or even the Internet!  OscliD offers facilities to combat this, in the form
+of two lists, one called the "allow list" and one called the "deny list".
+The allow list contains computers and networks who are explicity allowed to
+execute commands on your computer.  The deny list contains computers and
+networks who are denied access.  The allow list takes priority over the deny
+list.
+
+ The lists work like this: when a *command arrives, OscliD examines it before
+executing it.  If it finds that it came from a computer covered by something
+in the allow list, it executes the command regardless of what is in the deny
+list.  If it finds the computer covered by something in the deny list, it
+refuses to execute the command.  If the computer is not mentioned in either
+list, it executes the command anyway.
+
+ The entries stored in the allow and deny lists are *partial* IP addresses.
+If the part mentioned in the list matches up with a full IP address, then a
+match is found.  For example:
+
+    * "192.168.0" would match anything with 192.168.0 on the front,
+      e.g. 192.168.0.1;
+    * "1" would match anything with 1 on the front, e.g. 1.3.5.3;
+    * "158.152.1.65" would match *only* the computer "158.152.1.65"
+      as all the nibbles have been specified;
+    * "*" would match any computer.
+
+ To add entries to the allow and deny list, use the *commands *OscliD_Allow
+and *OscliD_Deny, followed the partial IP address you want to add.  (In a
+future release you may be able to specify hosts and networks by name,
+contained in the InetDBase:Hosts and InetDBase:Networks files.)
+
+ So, let's say there was a "hostile" network 12.40.20, where the computers on
+it were likely to send *commands designed to crash your computer.  So, you
+deny all commands sent from this network, by typing
+
+    *OscliD_Deny 12.40.20
+
+ So no more *commands from that network will be executed on your computer.
+Now, let's say that you had one "trusted friend" on this network, whose IP
+address was 12.40.20.3, and you wanted to give him access.  You add him to
+the allow list by typing
+
+    *OscliD_Allow 12.40.20.3
+
+and because the allow list takes precedence over the deny list, he (and only
+he) would be allowed access, but anyone else in the network would be denied.
+
+ There are a few specialities -- using "*" as the IP address includes *all*
+machines.  So, a typical setup would be
+
+    *OscliD_Allow 158.152.1.3    (a trusted friend)
+    *OscliD_Allow 192.168.3.5    (another trusted friend)
+    *OscliD_Deny *               (everyone else can go stuff themselves)
+
+where all computers are denied access apart from the two mentioned in
+"Allow".
+
+ Finally, if you want to see the contents of either of the allow or deny
+lists, just type on its own "*OscliD_Allow" or "*OscliD_Deny".  You will
+probably want to create an obey file somewhere in your boot up sequence
+containing a series of Allow/Deny commands.  My file reads thus:
+
+    | OscliD security setup
+    OscliD_Allow 192.168.0
+    OscliD_Deny *
+
+-----------------------------------------------------------------------------
+
+From version 1.07 you can include a single allow and deny entry at startup.
+To achieve the same as in the last example mentioned above, would require
+nothing more than replacing the last line of the default !Run file with
+
+    RMRun <OscliD$Dir>.OscliD 192.168.0 *

@@ -1,0 +1,16 @@
+# roscli makefile
+# (c) Chris Rutter 1997
+
+ccFlags 	= -apcs 3/32 -c -depend !Depend -IC:,OSLib:,TCPIPLibs: -throwback
+linkFlags 	= -aif -c++ -o $@
+
+libs		= OSLib:o.OSLib32 TCPIPLibs:o.socklib TCPIPLibs:o.inetlib TCPIPLibs:o.unixlib c:o.stubs
+objs		= roscli.o
+
+roscli:		  $(libs) $(objs)
+		  link $(linkFlags) $(objs) $(libs)
+
+roscli.o: 	  c.roscli
+	          cc $(ccFlags) c.roscli
+
+# Dynamic dependencies:

@@ -1,0 +1,84 @@
+Version history
+-----------------------------------------------------------------------------
+
+ 1.00 - First release version
+ 1.01 - With further knowledge about EventV #19, I removed the unnecessary
+        extra callback, which will probably make no difference whatsoever
+ 1.02 - Fixed bugs in stack allocation for the Wimp task, and added the
+        host deny/allow scheme
+ 1.03 - Fixed bug where several messages arriving concurrently wouldn't
+        get processed (became apparent in script files)
+ 1.04 - Fixed bug which could have caused problems with the deny/allow tables
+ 1.05 - Fixed bug where requests which arrived during execution of a previous
+        OscliD command would have been ignored
+ 1.06 - Unix roscli added
+      - Code placed under GPL
+      - Moved |ip_buffer| writable buffer out of read-only code area
+
+ 1.07 revision 0 - 02-09-2006
+      - Added XP roscli.
+      - Curious bugs in event handler: wk_buffer, wk_allow and wk_deny
+        weren't offset to r12 - did OscliD 1.06 actually work?
+      - Removed mode dependent setting of V flag.
+      - Removed clearing of V flag where this wasn't necessary because V was
+        already clear.
+      - Removed superfluous occurrence of 'OscliD' string (task name =
+        title).
+      - Made sure all SWIs called in supervisor mode are error signaling (X)
+        versions.
+      - Compressed rather bloated ip_write_quad.
+      - Removed terminate_string and modified count_dots.
+      - Changed single register stack pushes and pulls to simple stores and
+        loads.
+      - Changed LF+CR sequences to CR+LF.
+      - Removed ip_extract_nibble (bit of a misnomer) and changed
+        ip_quad_to_bits to use OS_ReadUnsigned directly.
+      - Cleaned up main poll loop (silly jump).
+      - Cleaned up socket close (stored -1 in socket handle variable when
+        module was about to be killed).
+      - Cleaned up initialisation and finalisation (saved bunch of unused
+        registers).
+      - Cleaned up allow and deny checks (LDMs instead of LDRs, counter, lots
+        of other optimisations).
+      - Cleaned up allow and deny display loops (earlier joining, LDMs
+        instead of LDRs, counter, display of netmask).
+      - Improved ip_quad_to_bits (exits on silly input).
+      - Changed names: ip_quad_to_bits -> ReadIP, ip_write_quad -> WriteIP,
+        eventv -> EventHandler plus many other smaller changes.
+      - Removed count_dots (functionality added to ReadIP).
+      - Added releasing the event vector if an error occurs while enabling
+        the Internet event.
+      - Added single allow and deny argument on start up.
+      - Changed all texts.
+      - Cleaned up event handler (pointers, counters).
+      - Changed register use in command routines (no need to save r0-r6).
+      - Added '-q' switch to bypass XOSCLI and OscliD_Task and add a command
+        to the queue directly.
+      - Added '-rst' switch to reset the machine, '-s' to start a named task,
+        '-k' to kill a named task, '-e' to press escape (in case of error
+        box), '-n' to press return, '-m' to send a Wimp message, '-d' to
+        deactivate and '-a' to (re)activate the daemon.
+
+ 1.07 revision 1 - 19-09-2006
+      - Removed the asterisks from the roscli command examples in the file
+        'roscli (XP)' in Documents.
+      - Added a RMEnsure for the Internet module to the !Run file.
+
+ 1.08 revision 0 - 19-07-2007
+      For some odd reason this version was never released. I even neglected
+      to describe the changes, so I had to reconstruct those from the source
+      code, almost four years later... :-(
+      - Added the '-L' switch to spool output locally (i.e. on the machine
+        running the daemon). This comes with a new environment variable
+        called OscliD$LocalSpool which should hold the name of the spool
+        file.
+      - Extended the command line functionality so more than one allow and/or
+        deny list entry can be specified at start up (comma separated list
+        without spaces!). Also 'deny all' is now implied, so there's no more
+        need to add a * to the command line.
+
+ 1.08 revision 1 - 16-04-2011
+      - Updated the Unix version of roscli to compile on Ubuntu 10.04 using
+        GCC 4.4.3. Binary included (may not work - will certainly need
+        executable bit set after copying to Unix/Linux machine). Compiled
+        with: gcc -Wall -o roscli roscli.c (warning about '%x' ignored).

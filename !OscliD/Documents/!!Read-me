@@ -1,0 +1,39 @@
+Name   : OscliD
+Purpose: OSCLI daemon
+Version: 1.08 revision 1 (16-04-2011)
+Status : GPL
+Authors: Chris Rutter, Frank de Bruijn
+
+
+Intro
+=====
+This is my adaptation of Chris Rutter's OSCLI daemon. The original used to
+be at http://www.quantumsoft.co.uk/druck/ but unfortunately that link no
+works.
+
+This software is provided free of charge and 'as is'. It comes with no
+guarantees of any kind. I think it does what it's supposed to do, but I
+accept no responsibility whatsoever for any loss or damage caused by use
+of or inability to use this software.
+
+That said, if the program fails somehow, do get in touch with me and
+I'll see if I can fix it.
+
+Licence
+=======
+This software is distributed under the Free Software Foundation's GNU General
+Public License (GPL), a copy of which should be present in the Documents
+directory inside the application.
+
+Installation
+============
+Copy the !OscliD application to your harddisk and include it in your boot
+sequence (Run at startup).
+You may want to change the last line in the !Run file to include a single
+'allow' and 'deny' entry (see Documents.Security).
+
+See the other docs in !OscliD.Documents for more information.
+
+
+Frank de Bruijn <osclid@aconet.org>
+http://www.aconet.org/tools/

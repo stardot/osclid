@@ -1,0 +1,30 @@
+# Project: roscli
+# Makefile created by Dev-C++ 4.9.9.2
+
+CPP  = g++.exe
+CC   = gcc.exe
+WINDRES = windres.exe
+RES  = 
+OBJ  = roscli.o $(RES)
+LINKOBJ  = roscli.o $(RES)
+LIBS =  -L"D:/Applicaties/Dev-C/lib" ../../lib/libws2_32.a  
+INCS =  -I"D:/Applicaties/Dev-C/include" 
+CXXINCS =  -I"D:/Applicaties/Dev-C/lib/gcc/mingw32/3.4.2/include"  -I"D:/Applicaties/Dev-C/include/c++/3.4.2/backward"  -I"D:/Applicaties/Dev-C/include/c++/3.4.2/mingw32"  -I"D:/Applicaties/Dev-C/include/c++/3.4.2"  -I"D:/Applicaties/Dev-C/include" 
+BIN  = roscli.exe
+CXXFLAGS = $(CXXINCS)  
+CFLAGS = $(INCS)  
+RM = rm -f
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before roscli.exe all-after
+
+
+clean: clean-custom
+	${RM} $(OBJ) $(BIN)
+
+$(BIN): $(OBJ)
+	$(CC) $(LINKOBJ) -o "roscli.exe" $(LIBS)
+
+roscli.o: roscli.c
+	$(CC) -c roscli.c -o roscli.o $(CFLAGS)

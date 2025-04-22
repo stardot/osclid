@@ -1,0 +1,4 @@
+WimpSlot -min 64k -max 64k
+Set BuildTemp$Dir <Obey$Dir>
+Run <BuildTemp$Dir>.Source
+Unset BuildTemp$Dir

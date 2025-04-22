@@ -1,0 +1,95 @@
+Switches
+-----------------------------------------------------------------------------
+
+OscliD 1.07 understands several command line switches. Unlike the -wimp
+switch (see the file Documents.roscli (RO/Unix)) these switches are not
+interpreted by the client (roscli) but by the server (OscliD). On the command
+line, you place them AFTER the name or IP address of the host, e.g.:
+
+    roscli rpc1 -q "$.Network.!AntiSpam"
+
+to start the AntiSpam application - using OscliD's queue - on the machine
+with the hostname rpc1.
+The quotes are only necessary if the machine you enter the command on objects
+if you omit them.
+
+The switches are:
+
+    -d      deactivate OscliD
+    -a      reactivate OscliD
+    -q      queue and start a task
+    -s      queue and start a named task
+    -k      kill a named task
+    -m      send a Wimp message
+    -e      send an escape character (e.g. to close an error box)
+    -n      send a carriage return
+    -rst    reset the machine
+    -L      redirect output to spool file <OscliD$LocalSpool> on the
+            machine running the daemon
+
+Most of these are fairly obvious, some are explained in more detail below.
+
+
+While OscliD is deactivated, it will only respond to a 'reactivate' command:
+
+    roscli rpc1 -a
+
+
+If your machine *Filer_Boots applications during start up, most of them will
+create 'Application$Dir' variables. You can of course use
+
+    roscli rpc1 -q "<Application$Dir>"
+
+to start such an application, but you can also use the -s switch like this:
+
+    roscli rpc1 -s application
+
+Similarly, you can quit an application by specifying the name it has in the
+taskmanager display. In case you have some reason to remove the Clipboard
+Holder, you could do that by entering:
+
+    roscli rpc1 -k clipboard holder
+
+No need for the correct case or the use of quotes with this switch (again,
+unless the machine you enter the command on complains).
+
+
+Sending a Wimp message is a little more complicated. The general format is:
+
+    -m <task> <code> [<arguments>]
+
+which indicates the task and message code are required. The <task> part can
+be the name of a task (enclosed in SINGLE quotes if it contains spaces), a
+task handle or zero (meaning: broadcast). The code must be a hexadecimal
+constant.
+
+The arguments can be strings or integers. An integer be must a (hexa)decimal
+constant preceded by a hash ('#') and will be entered in the buffer at the
+next word aligned position.
+Strings must be in SINGLE quotes if they contain spaces. A character can be
+'escaped' with the pipe symbol ('|'). This will subtract 64 from its ASCII
+value (so you specify a single quote character - ASCII 39 - with a pipe
+symbol followed by ASCII 103 i.e. '|g'). If you need the pipe symbol itself,
+enter two of them.
+If the last argument is a string, a terminating zero will be added
+automatically.
+
+Messages are always sent with reason code 17 (UserMessage). After all, using
+18 (UserMessage_Recorded) wouldn't make much sense as there's currently no
+way of sending anything back.
+
+Take a look at this one, imagining it sent from a Windows box:
+
+  roscli rpc1 -m "stronged &43B00 'StrongED_OpenDoc <crypstor$dir>.!RunImage'"
+
+Nested quoting! The double quotes are necessary because Windows throws a fit
+at unquoted '<' and '>' characters. The single quotes make sure the string
+argument doesn't get split at the space. You could use:
+
+  roscli rpc1 -m "stronged &43B00 StrongED_OpenDoc|`<crypstor$dir>.!RunImage"
+
+with the same result, by the way (the '|`' bit is an escaped space).
+
+
+What Chris wrote in the Tools file about 'wreaking havoc' applies just as
+well to some of these switches. Be careful.

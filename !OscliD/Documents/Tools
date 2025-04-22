@@ -1,0 +1,48 @@
+Tools
+-----------------------------------------------------------------------------
+
+OscliD comes supplied with a load of "tools" you can use as normal
+*commands, of the type that you are likely to want to use from a remote
+computer.  They come with C source for perusal; particularly common
+'good ideas' are to put Obey scripts in the !OscliD.Tools directory
+called "dialup" and "hangup".  The tools require OSLib to be available
+via OS$Path to rebuild them.
+
+ Here's an overview of the tools:
+
+ osexit    (executed simply by typing "*osexit" at the command-line or
+           sending it as a roscli command) will quit the currently-running
+           application, for example something that has crashed and is
+           stopping the Wimp from polling
+
+ reset     resets the machine
+
+ restart   restarts OscliD
+
+ mem       tells you the amount of free memory you have
+
+ kill      will kill a running Wimp task.  For example, "kill ShareFS" would
+           kill ShareFS (if loaded)
+
+ Obviously these commands can wreak havoc if not used properly, so always
+ensure that you've made your system secure (see "Security").
+
+-----------------------------------------------------------------------------
+
+With version 1.07, the tools 'reset' and 'kill' are no longer included, as
+their functionality has been added to the OscliD module itself. See the file
+Documents.Switches for more information.
+
+Also, the restart tool has been replaced by an updated version of a tool I
+wrote myself years ago (updated means: added AIF header and - of course -
+modified task_to_start$).
+BASIC source is included, although it is NOT GPL but Freeware (but it's so
+incredibly simple, there must be dozens of similar utilities about...).
+
+Lastly, OscliD version 1.07 no longer modifies the Run$Path (for some odd
+reason I absolutely HATE it when something does that...), so you'll have to
+copy the tools to (one of the subdirectories of) $.!Boot.Library if you want
+to use them.
+
+Frank de Bruijn
+September 2006

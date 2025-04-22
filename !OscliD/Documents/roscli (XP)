@@ -1,0 +1,27 @@
+Name   : roscli
+Purpose: OscliD client for Windows XP
+Version: 1.00  (01-10-2005)
+Status : GPL
+Author : Frank de Bruijn
+
+
+Intro
+=====
+The XP version of roscli was developed from the Unix version. It has no
+provisions for channeling output back to the Windows machine (see the file
+'roscli (RO/Unix)' in !OscliD.Documents).
+
+It does support the same main functions, i.e. sending a command to the RISC
+OS command line with:
+
+    roscli <host> <command>
+
+or adding it to OscliD's task queue with:
+
+    roscli -wimp <host> <command>
+
+
+Installation
+============
+Put the executable file roscli.exe on your Windows PC in a directory which
+is in the PATH (C:/Windows will usually do).

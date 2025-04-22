@@ -1,0 +1,110 @@
+/* roscli.c
+ * Roscli source file
+ * (c) Chris Rutter 1997
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "oslib/socket.h"
+#include "oslib/osfile.h"
+#include "socklib.h"
+#include "inetlib.h"
+#include "unixlib.h"
+#include "netdb.h"
+#include "sys/types.h"
+
+#define socket_UNUSED (socket_s)-1
+
+typedef int bool;
+
+extern void close_sock (void);
+socket_s sock = socket_UNUSED;
+
+int main (int argc, char *argv[])
+{
+	int argp = 1, base = 1, n;
+	struct hostent *hostaddr;
+	socket_sockaddr addr;
+	static char command[256], host[64], spool[256], col[256];
+	bool wimp = FALSE;
+
+	if (argc < 3)
+	{
+		printf ("Syntax: *roscli [-wimp] <host> <command>\n");
+		exit (1);
+	}
+
+	if (!strcmp (argv[1], "-wimp"))
+	{
+		wimp = TRUE;
+		base++;
+	}
+
+	for (n = base+1; n<argc; n++)
+	{
+		strcat (col, argv[n]);
+		if (n<argc-1) strcat (col, " ");
+	}
+
+	os_gs_trans (col, command, 256, 0);
+	os_gs_trans (argv[base], host, 64, 0);
+
+	if ((hostaddr = gethostbyname (host)) == NULL)
+	{
+		printf ("Error: failed to resolve %s.\n", host);
+		exit (1);
+	}
+
+ 	addr.sockaddr_in.af = socket_AF_INET;
+ 	addr.sockaddr_in.port = htons (8805);
+ 	bzero (addr.sockaddr_in.data, 8);
+ 	memcpy (&addr.sockaddr_in.addr, hostaddr->h_addr, hostaddr->h_length);
+
+	sock = socket_creat (socket_AF_INET, socket_SOCK_DGRAM, socket_IPPROTO_UDP);
+	atexit (close_sock);
+
+	socket_setsockopt (sock, socket_SOL_SOCKET, socket_SO_REUSEADDR, (byte *) &argp, sizeof argp);
+
+	if (command[0] == '*')
+	{
+		os_gs_trans (" { > <OscliD$Spool> }", spool, 256, 0);
+		strcat (command, spool);
+		remove ("<OscliD$Spool>");
+	}
+
+	if (wimp)
+	{
+		char temp[256];
+		strcpy (temp, command);
+		sprintf (command, "OscliD_Task %s", temp);
+	}
+
+        socket_sendto (sock, (byte *) command, strlen (command) + 1, 0x00, &addr, sizeof (addr));
+
+	if (command[0] == '*')
+	{
+		FILE *output;
+                int size;
+
+		while ((output = fopen ("<OscliD$Spool>", "r")) == NULL)
+		{
+			/* wait for output to appear */
+		}
+		fclose (output);
+		osfile_set_type ("<OscliD$Spool>", 0xfff);
+                osfile_read ("<OscliD$Spool>", NULL, NULL, &size, NULL);
+
+		if (size>0)
+		    xos_cli ("Filer_Run <OscliD$Spool>");
+	}
+}
+
+void close_sock ()
+{
+	if (sock != socket_UNUSED)
+	{
+		xsocket_close (sock);
+		sock = socket_UNUSED;
+	}
+}

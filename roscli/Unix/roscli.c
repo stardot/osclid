@@ -3,8 +3,10 @@
  * (c) Chris Rutter 1997
  * Substantially messed about and unixified - CRJ, 7/12/97
  * Fixed to make GCC 4.4.3 on Ubuntu happy - FDdB, 16-04-2011
+ * Fixed to work properly with IP addresses - Phil Pemberton, 2025-04-22
  */
 
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -35,7 +37,6 @@ int main (int argc, char *argv[]) {
 	char *hostname;
 	char command[256], *cend=command;	/* Command buffer and end pointer */
 	unsigned int address;
-	int isalpha(int c);
 	in_addr_t inet_addr(const char *cp);
 
 
@@ -72,13 +73,9 @@ int main (int argc, char *argv[]) {
 
 
 	/* Find IP address of recipient */
-	if (isalpha(hostname[0])) {
-		hostaddr = gethostbyname (hostname);
-	} else {
-		address = inet_addr(hostname);
-		hostaddr = gethostbyaddr((char*) &address, 4, AF_INET);
-	}
+	hostaddr = gethostbyname (hostname);
 	if (hostaddr == NULL) {
+		herror("resolve failed");
 		fprintf(stderr, "Host '%s' not found\n", hostname);
 		exit (4);
 	}
@@ -92,7 +89,7 @@ int main (int argc, char *argv[]) {
 
 
 	/* Report what's happening */
-	printf("Sending '%s' to '0x%x'\n", command, addr.sin_addr);
+	printf("Sending '%s' to '%s'\n", command, hostname);
 
 
 	/* Do it */
